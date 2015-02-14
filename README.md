@@ -27,7 +27,7 @@ git clone https://github.com/Taskulu/tweelead.git
 
 **4)** If you're using 2 Factor Authentication with your Google account, create an app specific password for Tweelead <a href="https://security.google.com/settings/security/apppasswords">here</a>.
 
-**5)** Copy <a href="https://docs.google.com/spreadsheets/d/1bZRFP5R6DvGTPkDrVhqyQCv8yUMsgLzFHud7kc8J1Zo/pubhtml">this</a> spreadsheet to your Google Drive. We'll need the spreadsheet key from the URL later.
+**5)** Copy <a href="https://docs.google.com/spreadsheets/d/1bZRFP5R6DvGTPkDrVhqyQCv8yUMsgLzFHud7kc8J1Zo/edit?usp=sharing">this</a> spreadsheet to your Google Drive. We'll need the spreadsheet key from the URL later.
 > URL format: https://docs.google.com/spreadsheets/d/{SPREADSHEET-KEY}/edit
 
 **6)** Update the constants in index.js from code you downloaded in step **1**:
@@ -54,4 +54,10 @@ client.stream('statuses/filter', {track: 'comma,separated,list,of,keywords,you,w
 cd /path/to/tweelead
 npm install
 node index
+```
+## Acceptance conditions
+I've configured the code to accept any negetavie tweet and neutral tweets with than 65% confidence level and send those tweets to the Google Spreadsheet. This needs to be changed/tuned for your use case. To change it open index.js and find and edit this part:
+
+```javascript
+if (error === null && (response.polarity == 'negative' || (response.polarity == 'neutral' && response.polarity_confidence <= 0.65))) {
 ```
