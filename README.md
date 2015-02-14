@@ -1,5 +1,5 @@
 # Tweelead
-> Generate actionable leads from Twitter
+> Generate actionable leads from Twitter in real-time.
 
 ## Intro
 There are many people out there literally asking you to introduce your product to them so they can become your client, but the problem is that it's very difficult to find them!
@@ -21,7 +21,7 @@ or
 git clone https://github.com/Taskulu/tweelead.git
 ```
 
-**2)** Create a <a href="https://apps.twitter.com/">Twitter Application</a>.
+**2)** Create a <a href="https://apps.twitter.com/">Twitter Application</a>. Go to the “Keys and Access Tokens” tab, and generate a new access token (there will be a button towards the bottom).
 
 **3)** Register an account with <a href="http://aylien.com/">AYLIEN</a> and generate the free application ID and Key.
 
