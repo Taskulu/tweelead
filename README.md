@@ -6,6 +6,8 @@ There are many people out there literally asking you to introduce your product t
 
 Tweelead will help you find those people easily - It gets the Tweets matching the keywords that are important to you from the Twitter Stream API, sends them to AYLIEN (free account required) for sentiment analysis, and depending on your preference, puts the positive (or negative) tweets in a spreadsheet on your Google Drive.
 
+You can read more about Tweelead here: http://blog.taskulu.com/post/how-get-actionable-leads-twitter-real-time
+
 ## How to set it up
 Setting Tweelead up is very easy and can be done in a few minutes:
 
