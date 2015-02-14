@@ -2,7 +2,7 @@
 > Generate actionable leads from Twitter in real-time.
 
 ## Intro
-There are many people out there literally asking you to introduce your product to them so they can become your client, but the problem is that it's very difficult to find them!
+There are many people out there literally asking you to introduce your product to them so they can become your customers, but the problem is that it's very difficult to find them!
 
 Tweelead will help you find those people easily - It gets the Tweets matching the keywords that are important to you from the Twitter Stream API, sends them to AYLIEN (free account required) for sentiment analysis, and depending on your preference, puts the positive (or negative) tweets in a spreadsheet on your Google Drive.
 
