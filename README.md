@@ -43,7 +43,13 @@ const TW_ACCESS_TOKEN_KEY = 'TWITTER-ACCESS-TOKEN-KEY';
 const TW_ACCESS_TOKEN_SEC = 'TWITTER-ACCESS-TOKEN-SECRET';
 ```
 
-**7)** Open up your terminal and start finding Tweeleads!
+**7)** Add the keywords you want to track on twitter in index.js, AYLIEN offers 1000 free API calls per day, so don't add too many keywords so you don't go over the API limit.
+
+```javascript
+client.stream('statuses/filter', {track: 'comma,separated,list,of,keywords,you,want,to,monitor'}, function(stream) {
+```
+
+**8)** Open up your terminal and start finding Tweeleads!
 ```bash
 cd /path/to/tweelead
 npm install
