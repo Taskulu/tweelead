@@ -1,6 +1,6 @@
 {
   "name": "Tweelead",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "Generate actionable leads from Twitter in real-time",
   "main": "index.js",
   "repository": {
