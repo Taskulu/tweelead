@@ -27,7 +27,7 @@ var client = new Twitter({
 });
 
 
-client.stream('statuses/filter', {track: CSV_KEYWOKRDS}, function(stream) {
+client.stream('statuses/filter', {track: CSV_KEYWORDS}, function(stream) {
   stream.on('data', function(tweet) {
     textapi.sentiment({"text": tweet.text}, function(error, response) {
       if (error === null && (response.polarity == 'negative' || (response.polarity == 'neutral' && response.polarity_confidence <= 0.65))) {
