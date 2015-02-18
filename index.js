@@ -10,6 +10,7 @@ const TW_CONSUMER_KEY     = 'TWITTER-CONSUMER-KEY';
 const TW_CONSUMER_SEC     = 'TWITTER-CONSUMER-SECRET';
 const TW_ACCESS_TOKEN_KEY = 'TWITTER-ACCESS-TOKEN-KEY';
 const TW_ACCESS_TOKEN_SEC = 'TWITTER-ACCESS-TOKEN-SECRET';
+const CSV_KEYWORDS        = 'comma,separated,list,of,keywords,you,want,to,monitor';
 
 var gsheet = new GoogleSpreadsheet('SPREADSHEET-KEY');
 
@@ -26,7 +27,7 @@ var client = new Twitter({
 });
 
 
-client.stream('statuses/filter', {track: 'comma,separated,list,of,keywords,you,want,to,monitor'}, function(stream) {
+client.stream('statuses/filter', {track: CSV_KEYWORDS}, function(stream) {
   stream.on('data', function(tweet) {
     textapi.sentiment({"text": tweet.text}, function(error, response) {
       if (error === null && (response.polarity == 'negative' || (response.polarity == 'neutral' && response.polarity_confidence <= 0.65))) {
