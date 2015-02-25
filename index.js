@@ -13,7 +13,18 @@ const TW_ACCESS_TOKEN_KEY = process.env.TW_ACCESS_TOKEN_KEY;
 const TW_ACCESS_TOKEN_SEC = process.env.TW_ACCESS_TOKEN_SEC;
 const CSV_KEYWORDS        = process.env.CSV_KEYWORDS;
 const LANGUAGE            = process.env.LANGUAGE;
-const POLARITY_CONFIDENCE = 0.65;
+
+// Confidence level is always between 0.5 and 1, therefore in the example below
+// setting the positive confidence level to 0.49 instead of 0 does not make any
+// difference in the results that are put in the spreadsheet.
+const POLARITY_OPTIONS    = {
+  // Do not show any positive tweets.
+  positive: 0,
+  // Show all the negative tweets.
+  negative: 1,
+  // Show neutral tweets with at most 65% confidence.
+  neutral: 0.65
+};
       
 
 var gsheet = new GoogleSpreadsheet(process.env.GOOGLE_SPREADSHEET);
@@ -31,51 +42,54 @@ var client = new Twitter({
 });
 
 function checkLanguage(tweet) {
+  console.log(tweet.text);
+  console.log("https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str);
+
   textapi.language({"text": tweet.text}, function(error, languageResponse) {
-    console.log(languageResponse.lang);
-    if (error === null && languageResponse.lang == LANGUAGE) {
+    if (handleError(error)) return;
+
+    if (languageResponse.lang == LANGUAGE) {
       measureSentiment(tweet);
-    } else {
-      console.log("Logging: False, wrong language");
-      console.log("*****");
     }
   });
 }
 
 function measureSentiment(tweet) {
   textapi.sentiment({"text": tweet.text}, function(error, response) {
-    if (error === null && (response.polarity == 'negative' || (response.polarity == 'neutral' && response.polarity_confidence <= POLARITY_CONFIDENCE))) {
-      console.log("Polarity confidence: " + Math.round(response.polarity_confidence*100)/100);
-      logTweetToGoogle(tweet, response);
-    } else {
-      console.log("Logging: False, positive sentiment");
-      console.log("*****");
+    if (handleError) return;
+
+    for (polarity in POLARITY_OPTIONS) {
+      if (POLARITY_OPTIONS[polarity] > 0.5) {
+        if (response.polarity == polarity && response.polarity_confidence <= POLARITY_OPTIONS[polarity]))) {
+          console.log("Polarity confidence: " + Math.round(response.polarity_confidence*100)/100);
+          logTweetToGoogle(tweet, response);
+        }
+      }
     }
   });
 }
 
 function logTweetToGoogle(tweet, response) {
   gsheet.setAuth(GOOGLE_EMAIL, GOOGLE_PASSWORD, function(err){
-    if (err) {
-      console.log(err);
-      return;
-    }
-    gsheet.addRow(1, { text: tweet.text, url: "https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str, polarity: response.polarity, confidence: Math.round(response.polarity_confidence*100)/100}, function(err) {console.log(err);} );
-    console.log("Logging: True");
-    console.log("*****");
+    if (handleError) return;
+
+    gsheet.addRow(1, {
+      text: tweet.text, url: "https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str,
+      polarity: response.polarity,
+      confidence: Math.round(response.polarity_confidence*100)/100
+    }, handleError);
   });
 }
 
+function handleError(err) {
+  if (err) {
+    console.log(err);
+    return true;
+  }
+  return false;
+}
+
 client.stream('statuses/filter', {track: CSV_KEYWORDS}, function(stream) {
-  stream.on('data', function(tweet) {
-    console.log(tweet.text);
-    console.log("https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str);
-
-    checkLanguage(tweet);
-  });
-
-  stream.on('error', function(error) {
-    console.log(error);
-  });
+  stream.on('data', checkLanguage);
+  stream.on('error', handleError);
 });
-

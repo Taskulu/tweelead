@@ -33,7 +33,7 @@ git clone https://github.com/Taskulu/tweelead.git
 > URL format: https://docs.google.com/spreadsheets/d/{SPREADSHEET-KEY}/edit
 
 **6)** Add the constants to your enviroment from code you downloaded in step **1**:
-```
+```bash
 export GOOGLE_EMAIL='youremail@gmail.com'
 // If you use Google 2 Factor Authentication this will be the app key you generated in step 4
 export GOOGLE_PASSWORD='YOUR-PASSWORD123!#'
@@ -47,10 +47,20 @@ export TW_ACCESS_TOKEN_SEC='TWITTER-ACCESS-TOKEN-SECRET'
 export CSV_KEYWORDS='comma,separated,list,of,keywords,you,want,to,monitor'
 ```
 
-**7)** Add the keywords you want to track on twitter in index.js, AYLIEN offers 1000 free API calls per day, so don't add too many keywords so you don't go over the API limit.
+**7)** What kind of tweets are you looking for? Configure the POLARITY_OPTIONS in index.js
 
 ```javascript
-const CSV_KEYWORDS        = 'comma,separated,list,of,keywords,you,want,to,monitor';
+// Confidence level is always between 0.5 and 1, therefore in the example below
+// setting the positive confidence level to 0.49 instead of 0 does not make any
+// difference in the results that are put in the spreadsheet.
+const POLARITY_OPTIONS    = {
+  // Do not show any positive tweets.
+  positive: 0,
+  // Show all the negative tweets.
+  negative: 1,
+  // Show neutral tweets with at most 65% confidence.
+  neutral: 0.65
+};
 ```
 
 **8)** Open up your terminal and start finding Tweeleads!
