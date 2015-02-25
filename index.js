@@ -60,7 +60,7 @@ function measureSentiment(tweet) {
 
     for (polarity in POLARITY_OPTIONS) {
       if (POLARITY_OPTIONS[polarity] > 0.5) {
-        if (response.polarity == polarity && response.polarity_confidence <= POLARITY_OPTIONS[polarity]))) {
+        if (response.polarity == polarity && response.polarity_confidence <= POLARITY_OPTIONS[polarity]) {
           console.log("Polarity confidence: " + Math.round(response.polarity_confidence*100)/100);
           logTweetToGoogle(tweet, response);
         }
