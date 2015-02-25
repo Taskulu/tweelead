@@ -2,17 +2,32 @@ var Twitter = require('twitter');
 var AYLIENTextAPI = require("aylien_textapi");
 var GoogleSpreadsheet = require("google-spreadsheet");
 
-const GOOGLE_EMAIL        = 'youremail@gmail.com';
-const GOOGLE_PASSWORD     = 'YOUR-PASSWORD123!#';
-const AYLIEN_APP_ID       = 'YOUR-AYLIEN-APPLICATION-ID';
-const AYLIEN_APP_KEY      = 'YOUR-AYLIEN-APPLICATION-KEY';
-const TW_CONSUMER_KEY     = 'TWITTER-CONSUMER-KEY';
-const TW_CONSUMER_SEC     = 'TWITTER-CONSUMER-SECRET';
-const TW_ACCESS_TOKEN_KEY = 'TWITTER-ACCESS-TOKEN-KEY';
-const TW_ACCESS_TOKEN_SEC = 'TWITTER-ACCESS-TOKEN-SECRET';
-const CSV_KEYWORDS        = 'comma,separated,list,of,keywords,you,want,to,monitor';
+const GOOGLE_EMAIL        = process.env.GOOGLE_EMAIL;
+const GOOGLE_PASSWORD     = process.env.GOOGLE_PASSWORD;
+const GOOGLE_SPREADSHEET  = process.env.GOOGLE_SPREADSHEET;
+const AYLIEN_APP_ID       = process.env.AYLIEN_APP_ID;   
+const AYLIEN_APP_KEY      = process.env.AYLIEN_APP_KEY;
+const TW_CONSUMER_KEY     = process.env.TW_CONSUMER_KEY;
+const TW_CONSUMER_SEC     = process.env.TW_CONSUMER_SEC;
+const TW_ACCESS_TOKEN_KEY = process.env.TW_ACCESS_TOKEN_KEY;
+const TW_ACCESS_TOKEN_SEC = process.env.TW_ACCESS_TOKEN_SEC;
+const CSV_KEYWORDS        = process.env.CSV_KEYWORDS;
+const LANGUAGE            = process.env.LANGUAGE;
 
-var gsheet = new GoogleSpreadsheet('SPREADSHEET-KEY');
+// Confidence level is always between 0.5 and 1, therefore in the example below
+// setting the positive confidence level to 0.49 instead of 0 does not make any
+// difference in the results that are put in the spreadsheet.
+const POLARITY_OPTIONS    = {
+  // Do not show any positive tweets.
+  positive: 0,
+  // Show all the negative tweets.
+  negative: 1,
+  // Show neutral tweets with at most 65% confidence.
+  neutral: 0.65
+};
+      
+
+var gsheet = new GoogleSpreadsheet(process.env.GOOGLE_SPREADSHEET);
 
 var textapi = new AYLIENTextAPI({
   application_id: AYLIEN_APP_ID,
@@ -26,27 +41,55 @@ var client = new Twitter({
   access_token_secret: TW_ACCESS_TOKEN_SEC
 });
 
+function checkLanguage(tweet) {
+  console.log(tweet.text);
+  console.log("https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str);
+
+  textapi.language({"text": tweet.text}, function(error, languageResponse) {
+    if (handleError(error)) return;
+
+    if (languageResponse.lang == LANGUAGE) {
+      measureSentiment(tweet);
+    }
+  });
+}
+
+function measureSentiment(tweet) {
+  textapi.sentiment({"text": tweet.text}, function(error, response) {
+    if (handleError) return;
+
+    for (polarity in POLARITY_OPTIONS) {
+      if (POLARITY_OPTIONS[polarity] > 0.5) {
+        if (response.polarity == polarity && response.polarity_confidence <= POLARITY_OPTIONS[polarity]) {
+          console.log("Polarity confidence: " + Math.round(response.polarity_confidence*100)/100);
+          logTweetToGoogle(tweet, response);
+        }
+      }
+    }
+  });
+}
+
+function logTweetToGoogle(tweet, response) {
+  gsheet.setAuth(GOOGLE_EMAIL, GOOGLE_PASSWORD, function(err){
+    if (handleError) return;
+
+    gsheet.addRow(1, {
+      text: tweet.text, url: "https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str,
+      polarity: response.polarity,
+      confidence: Math.round(response.polarity_confidence*100)/100
+    }, handleError);
+  });
+}
+
+function handleError(err) {
+  if (err) {
+    console.log(err);
+    return true;
+  }
+  return false;
+}
 
 client.stream('statuses/filter', {track: CSV_KEYWORDS}, function(stream) {
-  stream.on('data', function(tweet) {
-    textapi.sentiment({"text": tweet.text}, function(error, response) {
-      if (error === null && (response.polarity == 'negative' || (response.polarity == 'neutral' && response.polarity_confidence <= 0.65))) {
-        console.log(tweet.text);
-        console.log("https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str);
-        console.log("Polarity confidence: " + Math.round(response.polarity_confidence*100)/100);
-        gsheet.setAuth(GOOGLE_EMAIL, GOOGLE_PASSWORD, function(err){
-          if (err) {
-            console.log(err);
-            return;
-          }
-          gsheet.addRow(1, { text: tweet.text, url: "https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str, polarity: response.polarity, confidence: Math.round(response.polarity_confidence*100)/100}, function(err) {console.log(err);} );
-        });
-      }
-    });
-  });
-
-  stream.on('error', function(error) {
-    console.log(error);
-  });
+  stream.on('data', checkLanguage);
+  stream.on('error', handleError);
 });
-
