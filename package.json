@@ -13,16 +13,19 @@
     "social"
   ],
   "author": "Taskulu",
-  "contributors": ["Farhad Hedayati"],
+  "contributors": [
+    "Farhad Hedayati"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/taskulu/tweelead/issues"
   },
   "homepage": "https://github.com/taskulu/tweelead",
   "dependencies": {
-  	"twitter": "latest",
-  	"aylien_textapi": "latest",
-    "google-spreadsheet": "latest"
+    "aylien_textapi": "latest",
+    "google-spreadsheet": "latest",
+    "ini": "latest",
+    "twitter": "latest"
   },
   "engines": {
     "node": "0.10.x"

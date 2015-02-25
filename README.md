@@ -32,19 +32,19 @@ git clone https://github.com/Taskulu/tweelead.git
 **5)** Copy <a href="https://docs.google.com/spreadsheets/d/1bZRFP5R6DvGTPkDrVhqyQCv8yUMsgLzFHud7kc8J1Zo/edit?usp=sharing">this</a> spreadsheet to your Google Drive. We'll need the spreadsheet key from the URL later.
 > URL format: https://docs.google.com/spreadsheets/d/{SPREADSHEET-KEY}/edit
 
-**6)** Add the constants to your enviroment from code you downloaded in step **1**:
-```bash
-export GOOGLE_EMAIL='youremail@gmail.com'
-// If you use Google 2 Factor Authentication this will be the app key you generated in step 4
-export GOOGLE_PASSWORD='YOUR-PASSWORD123!#'
-export GOOGLE_SPREADSHEET="SPREADSHEET-KEY";
-export AYLIEN_APP_ID='YOUR-AYLIEN-APPLICATION-ID'
-export AYLIEN_APP_KEY='YOUR-AYLIEN-APPLICATION-KEY'
-export TW_CONSUMER_KEY='TWITTER-CONSUMER-KEY'
-export TW_CONSUMER_SEC='TWITTER-CONSUMER-SECRET'
-export TW_ACCESS_TOKEN_KEY='TWITTER-ACCESS-TOKEN-KEY'
-export TW_ACCESS_TOKEN_SEC='TWITTER-ACCESS-TOKEN-SECRET'
-export CSV_KEYWORDS='comma,separated,list,of,keywords,you,want,to,monitor'
+**6)** Rename config.ini.example to config.ini and set the values:
+```ini
+GOOGLE_EMAIL        = youremail@gmail.com
+GOOGLE_PASSWORD     = YOUR-PASSWORD123!#
+GOOGLE_SPREADSHEET  = GOOGLE-SPREADSHEET-KEY
+AYLIEN_APP_ID       = YOUR-AYLIEN-APPLICATION-ID
+AYLIEN_APP_KEY      = YOUR-AYLIEN-APPLICATION-KEY
+TW_CONSUMER_KEY     = TWITTER-CONSUMER-KEY
+TW_CONSUMER_SEC     = TWITTER-CONSUMER-SECRET
+TW_ACCESS_TOKEN_KEY = TWITTER-ACCESS-TOKEN-KEY
+TW_ACCESS_TOKEN_SEC = TWITTER-ACCESS-TOKEN-SECRET
+CSV_KEYWORDS        = comma,separated,list,of,your,keywords
+LANGUAGE            = en
 ```
 
 **7)** What kind of tweets are you looking for? Configure the POLARITY_OPTIONS in index.js
