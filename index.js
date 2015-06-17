@@ -48,7 +48,7 @@ function checkLanguage(tweet) {
 
 function measureSentiment(tweet) {
   textapi.sentiment({"text": tweet.text}, function(error, response) {
-    if (handleError) return;
+    if (handleError(error)) return;
 
     for (polarity in POLARITY_OPTIONS) {
       if (POLARITY_OPTIONS[polarity] > 0.5) {
@@ -63,7 +63,7 @@ function measureSentiment(tweet) {
 
 function logTweetToGoogle(tweet, response) {
   gsheet.setAuth(config.GOOGLE_EMAIL, config.GOOGLE_PASSWORD, function(err){
-    if (handleError) return;
+    if (handleError(err)) return;
 
     gsheet.addRow(1, {
       text: tweet.text, url: "https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str,
