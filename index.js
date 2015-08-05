@@ -73,7 +73,7 @@ function logTweetToGoogle(tweet, response) {
       text: tweet.text, url: "https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str,
       polarity: response.polarity,
       confidence: Math.round(response.polarity_confidence*100)/100
-    }, handleError);
+    }, handleError(err));
   });
 }
 
