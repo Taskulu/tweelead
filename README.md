@@ -93,7 +93,7 @@ const POLARITY_OPTIONS    = {
 ```bash
 cd /path/to/tweelead
 npm install
-node index
+node index.js
 ```
 ## Acceptance conditions
 I've configured the code to accept any negetavie tweet and neutral tweets with less than 65% confidence level and send those tweets to the Google Spreadsheet. This needs to be changed/tuned for your use case. To change it open index.js and find and edit this part:
