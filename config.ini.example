@@ -1,11 +1,18 @@
-GOOGLE_EMAIL        = youremail@gmail.com
-GOOGLE_PASSWORD     = YOUR-PASSWORD123!#
-GOOGLE_SPREADSHEET  = GOOGLE-SPREADSHEET-KEY
+# Configs for app
+CSV_KEYWORDS        = comma,separated,list,of,your,keywords
+LANGUAGE            = en
+
+# Aylien
 AYLIEN_APP_ID       = YOUR-AYLIEN-APPLICATION-ID
 AYLIEN_APP_KEY      = YOUR-AYLIEN-APPLICATION-KEY
+
+# Twitter
 TW_CONSUMER_KEY     = TWITTER-CONSUMER-KEY
 TW_CONSUMER_SEC     = TWITTER-CONSUMER-SECRET
 TW_ACCESS_TOKEN_KEY = TWITTER-ACCESS-TOKEN-KEY
 TW_ACCESS_TOKEN_SEC = TWITTER-ACCESS-TOKEN-SECRET
-CSV_KEYWORDS        = comma,separated,list,of,your,keywords
-LANGUAGE            = en
+
+# Google
+GOOGLE_EMAIL        = <some_uuid>@developer.gserviceaccount.com
+GOOGLE_SPREADSHEET  = GOOGLE-SPREADSHEET-KEY
+GOOGLE_PRIVATE_KEY  = ----- long private key ...
