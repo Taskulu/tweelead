@@ -11,7 +11,7 @@ var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'))
 // difference in the results that are put in the spreadsheet.
 const POLARITY_OPTIONS    = {
   // Do not show any positive tweets.
-  positive: 0,
+  positive: 1,
   // Show all the negative tweets.
   negative: 1,
   // Show neutral tweets with at most 65% confidence.
@@ -20,10 +20,7 @@ const POLARITY_OPTIONS    = {
 
 var gsheet = new GoogleSpreadsheet(config.GOOGLE_SPREADSHEET);
 
-var gsheet_creds = {
-  client_email: config.GOOGLE_EMAIL,
-  private_key: config.GOOGLE_PRIVATE_KEY
-}
+var gsheet_creds = require('./google-creds.json');
 
 var textapi = new AYLIENTextAPI({
   application_id: config.AYLIEN_APP_ID,
@@ -43,7 +40,6 @@ function checkLanguage(tweet) {
 
   textapi.language({"text": tweet.text}, function(error, languageResponse) {
     if (handleError(error)) return;
-
     if (languageResponse.lang == config.LANGUAGE) {
       measureSentiment(tweet);
     }
@@ -53,7 +49,6 @@ function checkLanguage(tweet) {
 function measureSentiment(tweet) {
   textapi.sentiment({"text": tweet.text}, function(error, response) {
     if (handleError(error)) return;
-
     for (polarity in POLARITY_OPTIONS) {
       if (POLARITY_OPTIONS[polarity] > 0.5) {
         if (response.polarity == polarity && response.polarity_confidence <= POLARITY_OPTIONS[polarity]) {
@@ -68,17 +63,19 @@ function measureSentiment(tweet) {
 function logTweetToGoogle(tweet, response) {
   gsheet.useServiceAccountAuth(gsheet_creds, function(err){
     if (handleError(err)) return;
-
     gsheet.addRow(1, {
       text: tweet.text, url: "https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str,
       polarity: response.polarity,
       confidence: Math.round(response.polarity_confidence*100)/100
-    }, handleError(err));
+    }, function (err) {
+      handleError(err);
+    });
   });
 }
 
 function handleError(err) {
   if (err) {
+    console.log(err.stack);
     console.log(err);
     return true;
   }

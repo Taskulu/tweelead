@@ -13,6 +13,6 @@ TW_ACCESS_TOKEN_KEY = TWITTER-ACCESS-TOKEN-KEY
 TW_ACCESS_TOKEN_SEC = TWITTER-ACCESS-TOKEN-SECRET
 
 # Google
-GOOGLE_EMAIL        = <some_uuid>@developer.gserviceaccount.com
+GOOGLE_CREDENTIALS  = google-creds.json
 GOOGLE_SPREADSHEET  = GOOGLE-SPREADSHEET-KEY
-GOOGLE_PRIVATE_KEY  = ----- long private key ...
+
