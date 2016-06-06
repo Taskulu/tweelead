@@ -17,9 +17,13 @@ const POLARITY_OPTIONS    = {
   // Show neutral tweets with at most 65% confidence.
   neutral: 0.65
 };
-      
 
 var gsheet = new GoogleSpreadsheet(config.GOOGLE_SPREADSHEET);
+
+var gsheet_creds = {
+  client_email: config.GOOGLE_EMAIL,
+  private_key: config.GOOGLE_PRIVATE_KEY
+}
 
 var textapi = new AYLIENTextAPI({
   application_id: config.AYLIEN_APP_ID,
@@ -62,14 +66,14 @@ function measureSentiment(tweet) {
 }
 
 function logTweetToGoogle(tweet, response) {
-  gsheet.setAuth(config.GOOGLE_EMAIL, config.GOOGLE_PASSWORD, function(err){
+  gsheet.useServiceAccountAuth(gsheet_creds, function(err){
     if (handleError(err)) return;
 
     gsheet.addRow(1, {
       text: tweet.text, url: "https://twitter.com/" + tweet.user.screen_name + '/status/' + tweet.id_str,
       polarity: response.polarity,
       confidence: Math.round(response.polarity_confidence*100)/100
-    }, handleError);
+    }, handleError(err));
   });
 }
 
