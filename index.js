@@ -20,7 +20,7 @@ const POLARITY_OPTIONS    = {
 
 var gsheet = new GoogleSpreadsheet(config.GOOGLE_SPREADSHEET);
 
-var gsheet_creds = require('./google-creds.json');
+var gsheet_creds = require('./' + config.GOOGLE_CREDENTIALS);
 
 var textapi = new AYLIENTextAPI({
   application_id: config.AYLIEN_APP_ID,
