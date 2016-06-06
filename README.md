@@ -36,18 +36,20 @@ Go to the  <a href="https://console.developers.google.com/project/">Google Devel
   3. In the sidebar on the left, expand APIs & auth > APIs
   4. Search for "drive"
   5. Click on "Drive API"
-  6. click the blue "Enable API" button
+  6. Click the blue "Enable API" button
   7. Create a service account for your project
   8. In the sidebar on the left, expand APIs & auth > Credentials
   9. Click "Create new Client ID" button
-  10. select the "Service account" option
-  11. click "Create Client ID" button to continue
-  12. when the dialog appears click "Okay, got it"
-  13. your JSON key file is generated and downloaded to your machine (__it is the only copy!__)
-  14. note your service account's email address (also available in the JSON key file)
-  15. Share the doc (or docs) with your service account using the email noted above
+  10. Select the "Service account" option
+  11. Click "Create Client ID" button to continue
+  12. When the dialog appears click "Okay, got it"
+  13. Your JSON key file is generated and downloaded to your machine (__it is the only copy!__)
+  14. Copy the JSON file to the folder that contains the Tweelead code and rename it to google-creds.json.
+  15. Share the spreadsheet with your service account using the email noted above
 
-**5)** Copy <a href="https://docs.google.com/spreadsheets/d/1bZRFP5R6DvGTPkDrVhqyQCv8yUMsgLzFHud7kc8J1Zo/edit?usp=sharing">this</a> spreadsheet to your Google Drive. We'll need the spreadsheet key from the URL later. Set this sharing persmissions to anyone who has this url can edit it, this is important to allow easy access.
+**5)** Copy <a href="https://docs.google.com/spreadsheets/d/1bZRFP5R6DvGTPkDrVhqyQCv8yUMsgLzFHud7kc8J1Zo/edit?usp=sharing">this</a> spreadsheet to your Google Drive. We'll need the spreadsheet key from the URL later. 
+Also, don't forget to share the spreadsheet with the Google service account (found in the JSON file you downloaded in step #14 above).
+
 > URL format: https://docs.google.com/spreadsheets/d/{SPREADSHEET-KEY}/edit
 
 **6)** Rename config.ini.example to config.ini and set the values:
@@ -67,9 +69,8 @@ TW_ACCESS_TOKEN_KEY = TWITTER-ACCESS-TOKEN-KEY
 TW_ACCESS_TOKEN_SEC = TWITTER-ACCESS-TOKEN-SECRET
 
 # Google
-GOOGLE_EMAIL        = <some_uuid>@developer.gserviceaccount.com
+GOOGLE_CREDENTIALS  = google-creds.json
 GOOGLE_SPREADSHEET  = GOOGLE-SPREADSHEET-KEY
-GOOGLE_PRIVATE_KEY  = ----- long private key ...
 
 ```
 
@@ -95,9 +96,4 @@ cd /path/to/tweelead
 npm install
 node index.js
 ```
-## Acceptance conditions
-I've configured the code to accept any negetavie tweet and neutral tweets with less than 65% confidence level and send those tweets to the Google Spreadsheet. This needs to be changed/tuned for your use case. To change it open index.js and find and edit this part:
 
-```javascript
-if (error === null && (response.polarity == 'negative' || (response.polarity == 'neutral' && response.polarity_confidence <= 0.65))) {
-```
